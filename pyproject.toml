@@ -9,6 +9,8 @@ packages = [{include = "file_data_transfer_api"}]
 [tool.poetry.dependencies]
 python = "^3.9"
 fastapi = {extras = ["all"], version = "^0.104.1"}
+python-multipart = "^0.0.6"
+requests = "^2.31.0"
 
 
 [build-system]
