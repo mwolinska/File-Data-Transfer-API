@@ -19,6 +19,7 @@ def remove_database_entry(file_id: str) -> FileMetadata:
     dump_to_database_json(content=database_content)
     return entry_metadata
 
+
 def write_file_to_location(
     file_contents: bytes,
     path_to_save_location: Path,
@@ -26,14 +27,17 @@ def write_file_to_location(
     with open(path_to_save_location, "wb") as f:
         f.write(file_contents)
 
+
 def load_database_json():
     with open(DATABASE_PATH, "r") as local_file:
         content = json.load(local_file)
     return content
 
+
 def dump_to_database_json(content: Dict[str, str]):
     with open(DATABASE_PATH, "w") as local_file:
         json.dump(content, local_file)
+
 
 def get_metadata_from_file_id(file_id: str) -> FileMetadata:
     database_content = load_database_json()

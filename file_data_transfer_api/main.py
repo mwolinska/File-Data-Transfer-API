@@ -34,25 +34,23 @@ async def upload_file(file: UploadFile) -> FileDatabaseEntry:
     update_database_json(entry=file_info)
     return file_info
 
-@app.get(path="/files/{file_id}")
-async def download_file(file_id: str) -> FileResponse:
+@app.get(path="/files/{fileId}")
+async def download_file(fileId: str) -> FileResponse:
     database_content = load_database_json()
-    file_info = FileMetadata(**database_content[file_id])
+    file_info = FileMetadata(**database_content[fileId])
     return FileResponse(file_info.filepath, filename=file_info.filename)
 
-@app.put(path="/files/{file_id}")
-async def rename_file(file_id: str,
-                      new_filename: str,
-                      ) -> FileDatabaseEntry:
-    entry_metadata = get_metadata_from_file_id(file_id=file_id)
+@app.put(path="/files/{fileId}")
+async def rename_file(fileId: str, newFilename: str) -> FileDatabaseEntry:
+    entry_metadata = get_metadata_from_file_id(file_id=fileId)
     file_suffix = entry_metadata.filename.split(".")[-1]
-    new_filename = new_filename + "." + file_suffix
+    new_filename = newFilename + "." + file_suffix
 
     entry_metadata.filepath.rename(UPLOAD_PATH / new_filename)
 
     entry_metadata.filename = new_filename
     updated_entry = FileDatabaseEntry(
-        file_id=file_id,
+        file_id=fileId,
         metadata=entry_metadata
     )
 
@@ -60,12 +58,12 @@ async def rename_file(file_id: str,
     return updated_entry
 
 
-@app.delete(path="/files/{file_id}")
-async def delete_file(file_id: str) -> FileDatabaseEntry:
-    entry_metadata = remove_database_entry(file_id=file_id)
+@app.delete(path="/files/{fileId}")
+async def delete_file(fileId: str) -> FileDatabaseEntry:
+    entry_metadata = remove_database_entry(file_id=fileId)
     os.remove(path=entry_metadata.filepath)
     return FileDatabaseEntry(
-        file_id=file_id,
+        file_id=fileId,
         metadata=entry_metadata,
     )
 
