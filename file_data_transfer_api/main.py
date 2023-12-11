@@ -69,7 +69,7 @@ async def delete_file(fileId: str) -> FileDatabaseEntry:
 
 if __name__ == '__main__':
     uvicorn.run(
-        "playground:app",
+        "main:app",
         host="127.0.0.1",
         port=8000,
         reload_dirs="file_data_transfer_api",
