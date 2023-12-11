@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "file-data-transfer-api"
+version = "0.1.0"
+description = ""
+authors = ["Marta Wolinska <mswolinska@gmail.comk>"]
+readme = "README.md"
+packages = [{include = "file_data_transfer_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = {extras = ["all"], version = "^0.104.1"}
+python-multipart = "^0.0.6"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+launch_api = "file_data_transfer_api.cli:launch_api"
