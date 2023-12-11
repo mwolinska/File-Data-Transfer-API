@@ -1,7 +1,6 @@
 import os
 import uuid
 
-import uvicorn
 from fastapi import FastAPI, UploadFile
 from starlette.responses import FileResponse
 
@@ -65,13 +64,4 @@ async def delete_file(fileId: str) -> FileDatabaseEntry:
     return FileDatabaseEntry(
         file_id=fileId,
         metadata=entry_metadata,
-    )
-
-if __name__ == '__main__':
-    uvicorn.run(
-        "main:app",
-        host="127.0.0.1",
-        port=8000,
-        reload_dirs="file_data_transfer_api",
-        reload=True
     )

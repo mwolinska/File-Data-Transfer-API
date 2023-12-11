@@ -21,6 +21,13 @@ This API currently contains four functionalities:
 * Renaming an uploaded file,
 * Deleting a file.
 
+The API can currently be run locally. 
+First, you need to launch the API by running
+
+```shell
+launch_api
+```
+
 To use our API we recommend using our client. 
 To access the functionalities, first instanstiate a `Client`.
 

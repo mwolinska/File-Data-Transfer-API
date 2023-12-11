@@ -16,3 +16,6 @@ requests = "^2.31.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+launch_api = "file_data_transfer_api.cli:launch_api"
