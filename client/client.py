@@ -45,25 +45,3 @@ class Client:
             return response.json()
         else:
             raise ValueError
-
-
-if __name__ == '__main__':
-
-    client = Client()
-
-    response_1 = client.upload_file(
-        path_to_file=Path(__file__).parent.parent / "nye-doggo.jpg"
-    )
-
-    file_id = response_1.file_id
-    client.download_file(
-        file_id=file_id,
-        path_to_save=Path(__file__).parent,
-    )
-
-    response_3 = client.update_filename(
-        file_id=file_id,
-        new_filename="my_new_doggo",
-    )
-
-    response_4 = client.delete_file(file_id=file_id)
