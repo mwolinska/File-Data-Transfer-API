@@ -29,11 +29,10 @@ launch_api
 ```
 
 To use our API we recommend using our client. 
-To access the functionalities, first instanstiate a `Client`.
+To access the functionalities, first instantiate a `Client`.
 
 ```python
-from client import Client
-from pathlib import Path
+from file_data_transfer_api.client import Client
 
 client = Client()
 
@@ -70,7 +69,7 @@ updated_entry = client.update_filename(
 )
 ```
 
-To remove an entry from the databse run:
+To remove an entry from the database run:
 ```python
 deleted_entry = client.delete_file(file_id=file_id)
 ```

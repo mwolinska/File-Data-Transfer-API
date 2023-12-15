@@ -4,10 +4,10 @@ import uuid
 from fastapi import FastAPI, UploadFile
 from starlette.responses import FileResponse
 
-from file_data_transfer_api.api_datamodel import \
+from file_data_transfer_api.api.api_datamodel import \
     FileMetadata, FileDatabaseEntry
-from file_data_transfer_api.env_variables import UPLOAD_PATH
-from file_data_transfer_api.file_saving_utils import update_database_json, \
+from file_data_transfer_api.utils.env_variables import UPLOAD_PATH
+from file_data_transfer_api.utils.file_saving_utils import update_database_json, \
     write_file_to_location, load_database_json, get_metadata_from_file_id, \
     remove_database_entry
 

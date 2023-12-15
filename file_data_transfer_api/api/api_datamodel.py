@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict
 
-from file_data_transfer_api.env_variables import UPLOAD_PATH
+from file_data_transfer_api.utils.env_variables import UPLOAD_PATH
 
 
 @dataclass

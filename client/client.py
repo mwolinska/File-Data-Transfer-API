@@ -2,7 +2,8 @@ from pathlib import Path
 
 import requests
 
-from file_data_transfer_api.api_datamodel import FileDatabaseEntry
+from file_data_transfer_api.api.api_datamodel import FileDatabaseEntry
+
 
 class Client:
     def __init__(self):

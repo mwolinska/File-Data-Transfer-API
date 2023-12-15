@@ -2,9 +2,9 @@ import json
 from pathlib import Path
 from typing import Dict
 
-from file_data_transfer_api.api_datamodel import \
+from file_data_transfer_api.api.api_datamodel import \
     FileMetadata, FileDatabaseEntry
-from file_data_transfer_api.env_variables import DATABASE_PATH
+from file_data_transfer_api.utils.env_variables import DATABASE_PATH
 
 def update_database_json(entry: FileDatabaseEntry):
     content = load_database_json()
