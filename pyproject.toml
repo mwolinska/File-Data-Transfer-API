@@ -11,6 +11,8 @@ python = "^3.9"
 fastapi = {extras = ["all"], version = "^0.104.1"}
 python-multipart = "^0.0.6"
 requests = "^2.31.0"
+numpy = "^1.26.2"
+pillow = "^10.1.0"
 
 
 [build-system]

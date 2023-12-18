@@ -1,8 +1,13 @@
+from io import BytesIO
 from pathlib import Path
+from typing import Union, Optional
 
+import numpy as np
 import requests
+from PIL import Image
 
-from file_data_transfer_api.api.api_datamodel import FileDatabaseEntry
+from file_data_transfer_api.api.api_datamodel import FileDatabaseEntry, \
+    FileMetadata
 
 
 class Client:
@@ -18,30 +23,47 @@ class Client:
             files=file_to_upload,
         )
         if response.ok:
-            return FileDatabaseEntry(**response.json())
+            response = response.json()
+            return FileDatabaseEntry(
+                file_id=response["file_id"],
+                metadata=FileMetadata(**response["metadata"])
+            )
         else:
             raise ValueError(
                 f"API could not be accessed. "
                 f"Response error code {response.status_code}",
             )
 
-    def download_file(self, file_id: str, path_to_save: Path):
+    def access_file(
+            self, file_id: str, path_to_save: Optional[Path] = None,
+    ) -> Union[np.ndarray, str]:
+        """Access file s
+
+        Args:
+            file_id: file id under which the file is stored.
+            path_to_save: if passed, the location where the file will be saved.
+
+        Returns:
+            Decoded contents of the file as an array if the file is an image
+            or as a string otherwise.
+        """
         response = requests.get(f"{self.url}/files/{file_id}")
-
-        content_type = response.headers["content-type"].split("/")[0]
-        # TODO: process content type more clearly
-        filename = \
-            response.headers["content-disposition"].\
-                split("filename=")[-1].\
-                replace('"', '')
-
-        # TODO: can anything that isn't an image be sent to API
-
-        if content_type == 'image':
-            with open(path_to_save / filename, "wb") as file:
+        if path_to_save is not None:
+            with open(path_to_save / response.headers["filename"], "wb") \
+                    as file:
                 file.write(response.content)
+
+        if "image" in response.headers["content-type"]:
+            return np.array(Image.open(BytesIO(response.content)))
         else:
-            raise NotImplementedError("This api only handles images.")
+            try:
+                return response.content.decode(encoding=response.encoding)
+            except TypeError:
+                raise NotImplementedError(
+                    "This file type is not handled natively in this package."
+                    "Run this function with path_to_save != None and "
+                    "load the file manually."
+                )
 
     def delete_file(self, file_id: str) -> FileDatabaseEntry:
         """Deletes file and corresponding entry in database."""
@@ -50,7 +72,7 @@ class Client:
             response = response.json()
             return FileDatabaseEntry(
                 file_id=response["file_id"],
-                metadata=response["metadata"]
+                metadata=FileMetadata(**response["metadata"])
             )
         else:
             raise ValueError
@@ -66,7 +88,10 @@ class Client:
             response = response.json()
             return FileDatabaseEntry(
                 file_id=response["file_id"],
-                metadata=response["metadata"]
+                metadata=FileMetadata(**response["metadata"]),
             )
         else:
-            raise ValueError
+            raise ValueError(
+                f"API could not be accessed. "
+                f"Response error code {response.status_code}",
+            )

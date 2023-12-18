@@ -47,7 +47,13 @@ async def download_file(fileId: str) -> FileResponse:
     """Retrieves file based on a fileId allowing."""
     database_content = load_database_json()
     file_info = FileMetadata(**database_content[fileId])
-    return FileResponse(file_info.filepath, filename=file_info.filename)
+    return FileResponse(
+            file_info.filepath, filename=file_info.filename,
+            headers={
+                "filename": file_info.filename,
+                "file_id": fileId,
+            },
+    )
 
 @app.put(path="/files/{fileId}")
 async def rename_file(fileId: str, newFilename: str) -> FileDatabaseEntry:
