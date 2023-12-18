@@ -32,7 +32,7 @@ To use our API we recommend using our client.
 To access the functionalities, first instantiate a `Client`.
 
 ```python
-from file_data_transfer_api.client import Client
+from client.client import Client
 
 client = Client()
 
@@ -55,8 +55,9 @@ file_id = "66b2dcfb-06be-4d7d-a8d0-6f0f34710562"
 
 To download a demo file set the desired `file_id`. 
 To download our demo image use the `file_id` below.
+
 ```python
-client.download_file(
+client.access_file(
     file_id=file_id,
     path_to_save="<path-to-save-file>",
 )
