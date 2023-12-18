@@ -2,6 +2,7 @@ import uvicorn
 
 
 def launch_api():
+    """Launches api."""
     uvicorn.run(
         "file_data_transfer_api.main:app",
         host="127.0.0.1",
