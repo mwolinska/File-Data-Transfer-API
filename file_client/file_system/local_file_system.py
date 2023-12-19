@@ -11,8 +11,5 @@ class LocalFileSystem(AbstractFileSystem):
         with open(UPLOAD_PATH / filename, "wb") as f:
             f.write(content)
 
-    def change_filename(self, path_to_file: Path, new_filename: str):
-        path_to_file.rename(UPLOAD_PATH / new_filename)
-
-    def delete_file(self, file_id: str, temp_path: Path):
-        os.remove(path=temp_path)
+    def delete_file(self, file_id: str):
+        os.remove(path=UPLOAD_PATH / file_id)

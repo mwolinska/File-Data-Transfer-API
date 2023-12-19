@@ -18,35 +18,24 @@ class FileManager:
             )
 
     @classmethod
-    def upload_file(cls, file_content: bytes, filename: str):
+    def upload_file(cls, file_content: bytes, file_id: str):
         file_system = cls._select_file_system(
-            upload_path=Path(UPLOAD_PATH / filename).absolute())
+            upload_path=cls.path_to_file(file_id),
+        )
         return file_system.upload_content(
             content=file_content,
-            filename=filename,
+            filename=file_id,
         )
 
     @classmethod
-    def update_filename(cls, old_name: Path, new_name: str):
-        # TODO: change to work with ids rather than paths
+    def delete_file(cls, file_id: str):
         file_system = cls._select_file_system(
-            upload_path=UPLOAD_PATH / old_name,
-        )
-        return file_system.change_filename(
-            path_to_file=UPLOAD_PATH / old_name,
-            new_filename=new_name,
-        )
-
-    @classmethod
-    def delete_file(cls, file_id: str, temp_path: Path):
-        file_system = cls._select_file_system(
-            upload_path=temp_path,
+            upload_path=cls.path_to_file(file_id),
         )
         return file_system.delete_file(
             file_id=file_id,
-            temp_path=temp_path,
         )
 
     @staticmethod
-    def path_to_file(filename: str):
-        return UPLOAD_PATH / filename
+    def path_to_file(file_id: str):
+        return (UPLOAD_PATH / file_id).absolute()

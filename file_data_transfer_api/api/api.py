@@ -30,9 +30,8 @@ async def upload_file(file: UploadFile) -> FileDatabaseEntry:
                 ),
         )
 
-    FileManager.upload_file(file_content=contents, filename=file.filename)
+    FileManager.upload_file(file_content=contents, file_id=file_info.file_id)
     DatabaseManager.add_entry(entry=file_info)
-
     return file_info
 
 @app.get(path="/files/{fileId}")
@@ -40,7 +39,7 @@ async def download_file(fileId: str) -> FileResponse:
     """Retrieves file based on a fileId allowing."""
     file_info = DatabaseManager.retrieve_entry(item_id=fileId)
     return FileResponse(
-            FileManager.path_to_file(file_info.metadata.filename),
+            FileManager.path_to_file(file_id=fileId),
             headers={
                 "filename": file_info.metadata.filename,
                 "file_id": fileId,
@@ -67,11 +66,6 @@ async def rename_file(fileId: str, newFilename: str) -> FileDatabaseEntry:
             filename=new_filename,
         )
     )
-
-    FileManager.update_filename(
-        old_name=database_entry.metadata.filename,
-        new_name=new_filename
-    )
     DatabaseManager.update_entry(database_entry=updated_entry)
     return updated_entry
 
@@ -89,6 +83,5 @@ async def delete_file(fileId: str) -> FileDatabaseEntry:
     entry = DatabaseManager.delete_entry(item_id=fileId)
     FileManager.delete_file(
         file_id=fileId,
-        temp_path=FileManager.path_to_file(entry.metadata.filename),
     )
     return entry
