@@ -1,18 +1,14 @@
-import os
 import uuid
 
 from fastapi import FastAPI, UploadFile
 from starlette.responses import FileResponse
 
-from file_data_transfer_api.api.api_datamodel import \
+from database_client.database_manager import DatabaseManager
+from file_client.file_manager import FileManager
+from database_client.datamodel.database_entry import \
     FileMetadata, FileDatabaseEntry
-from file_data_transfer_api.utils.env_variables import UPLOAD_PATH
-from file_data_transfer_api.utils.file_saving_utils import \
-    update_database_json, load_database_json, get_metadata_from_file_id, \
-    remove_database_entry, write_bytes_to_location
 
 app = FastAPI()
-
 
 @app.post(path="/files/")
 async def upload_file(file: UploadFile) -> FileDatabaseEntry:
@@ -23,14 +19,9 @@ async def upload_file(file: UploadFile) -> FileDatabaseEntry:
 
     Returns:
         Information stored in the database about this file including its
-        uniqe id and its metadata.
+        unique id and its metadata.
     """
     contents = await file.read()
-
-    write_bytes_to_location(
-        file_contents=contents,
-        path_to_save_location=UPLOAD_PATH / file.filename,
-    )
 
     file_info = FileDatabaseEntry(
         file_id=str(uuid.uuid4()),
@@ -39,18 +30,19 @@ async def upload_file(file: UploadFile) -> FileDatabaseEntry:
                 ),
         )
 
-    update_database_json(entry=file_info)
+    FileManager.upload_file(file_content=contents, filename=file.filename)
+    DatabaseManager.add_entry(entry=file_info)
+
     return file_info
 
 @app.get(path="/files/{fileId}")
 async def download_file(fileId: str) -> FileResponse:
     """Retrieves file based on a fileId allowing."""
-    database_content = load_database_json()
-    file_info = FileMetadata(**database_content[fileId])
+    file_info = DatabaseManager.retrieve_entry(item_id=fileId)
     return FileResponse(
-            file_info.filepath, filename=file_info.filename,
+            FileManager.path_to_file(file_info.metadata.filename),
             headers={
-                "filename": file_info.filename,
+                "filename": file_info.metadata.filename,
                 "file_id": fileId,
             },
     )
@@ -66,19 +58,21 @@ async def rename_file(fileId: str, newFilename: str) -> FileDatabaseEntry:
     Returns:
         The updated database entry.
     """
-    entry_metadata = get_metadata_from_file_id(file_id=fileId)
-    file_suffix = entry_metadata.filename.split(".")[-1]
+    database_entry = DatabaseManager.retrieve_entry(item_id=fileId)
+    file_suffix = database_entry.metadata.filename.split(".")[-1]
     new_filename = newFilename + "." + file_suffix
-
-    entry_metadata.filepath.rename(UPLOAD_PATH / new_filename)
-
-    entry_metadata.filename = new_filename
     updated_entry = FileDatabaseEntry(
         file_id=fileId,
-        metadata=entry_metadata
+        metadata=FileMetadata(
+            filename=new_filename,
+        )
     )
 
-    update_database_json(entry=updated_entry)
+    FileManager.update_filename(
+        old_name=database_entry.metadata.filename,
+        new_name=new_filename
+    )
+    DatabaseManager.update_entry(database_entry=updated_entry)
     return updated_entry
 
 
@@ -92,9 +86,9 @@ async def delete_file(fileId: str) -> FileDatabaseEntry:
     Returns:
         Entry that was deleted from the database.
     """
-    entry_metadata = remove_database_entry(file_id=fileId)
-    os.remove(path=entry_metadata.filepath)
-    return FileDatabaseEntry(
+    entry = DatabaseManager.delete_entry(item_id=fileId)
+    FileManager.delete_file(
         file_id=fileId,
-        metadata=entry_metadata,
+        temp_path=FileManager.path_to_file(entry.metadata.filename),
     )
+    return entry

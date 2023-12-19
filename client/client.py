@@ -6,7 +6,7 @@ import numpy as np
 import requests
 from PIL import Image
 
-from file_data_transfer_api.api.api_datamodel import FileDatabaseEntry, \
+from database_client.datamodel.database_entry import FileDatabaseEntry, \
     FileMetadata
 
 
@@ -16,7 +16,7 @@ class Client:
         self.url = "http://127.0.0.1:8000"
 
     def upload_file(self, path_to_file: Path) -> FileDatabaseEntry:
-        """Uploads file and adds corresponding entry to databse."""
+        """Uploads file and adds corresponding entry to database."""
         file_to_upload = {'file': open(path_to_file, 'rb')}
         response = requests.post(
             url=f"{self.url}/files",

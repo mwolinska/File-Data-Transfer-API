@@ -7,7 +7,7 @@ def launch_api():
         "file_data_transfer_api.api.api:app",
         host="127.0.0.1",
         port=8000,
-        reload_dirs="file_data_transfer_api",
+        reload_dirs="File-Data-transfer-API",
         reload=True
     )
 

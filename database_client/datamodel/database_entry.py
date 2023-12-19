@@ -1,8 +1,6 @@
 from dataclasses import dataclass, asdict
 from typing import Dict
 
-from file_data_transfer_api.utils.env_variables import UPLOAD_PATH
-
 
 @dataclass
 class FileMetadata:
@@ -12,11 +10,6 @@ class FileMetadata:
         filename: name of file to be saved.
     """
     filename: str
-
-    @property
-    def filepath(self):
-        """Returns path to saved file in storage."""
-        return UPLOAD_PATH / self.filename
 
 @dataclass
 class FileDatabaseEntry:
