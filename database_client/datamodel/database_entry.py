@@ -23,5 +23,5 @@ class FileDatabaseEntry:
     metadata: FileMetadata
 
     def to_database_format(self) -> Dict[str, Dict[str, str]]:
-        """Converts dataclass to dictionary to allow addition to databse."""
+        """Converts dataclass to dictionary to allow addition to database."""
         return {self.file_id: asdict(self.metadata)}

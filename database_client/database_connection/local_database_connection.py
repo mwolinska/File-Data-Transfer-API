@@ -23,8 +23,7 @@ class LocalJsonDatabaseConnection(AbstractDatabaseConnection):
         """Updates the database with an updated entry.
 
         Args:
-            item_id: item item_id in the database,
-            updated_entry: a file entry to be added or updated in the database.
+            updated_entry: an entry to be added or updated in the database.
         """
         content = self._load_database()
         content.update(updated_entry.to_database_format())
@@ -63,7 +62,8 @@ class LocalJsonDatabaseConnection(AbstractDatabaseConnection):
             content = json.load(local_file)
         return content
 
-    def _dump_to_database(self, content: Dict[str, str]):
+    @staticmethod
+    def _dump_to_database(content: Dict[str, str]):
         """Updates database to content.
 
         Args:

@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 from file_client.env_variables import UPLOAD_PATH
 from file_client.file_system.abstract_file_system import AbstractFileSystem
